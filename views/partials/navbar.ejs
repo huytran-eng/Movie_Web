@@ -1,0 +1,42 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="/">Trang chu</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="navbar-nav ">
+                <a class="nav-link" href="/movies">Phim noi bat</a>
+            </div>
+
+            <div class="navbar-nav ms-auto">
+                <form class="d-flex" action="/movies/find" method="GET">
+                    <input class="form-control me-2" name="result" type="search" placeholder="Search"
+                        aria-label="Search">
+                    <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+                <% if(!currentUser) {%>
+                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="/register">Register</a>
+                    <% } else {%>
+                        <div class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                <%=currentUser.username%>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/user/<%=currentUser.user_id%>">Thong tin</a></li>
+                                <li><a class="dropdown-item" href="/logout">Dang xuat</a></li>
+
+                            </ul>
+                        </div>
+                        <% } %>
+            </div>
+        </div>
+
+    </div>
+</nav>

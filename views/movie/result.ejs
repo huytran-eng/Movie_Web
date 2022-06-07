@@ -1,0 +1,37 @@
+<% layout('layout/boilerplate')%>
+
+    <%if(movies.length>0){%>
+        <div class="row">
+            <% for (let movie of movies){%>
+
+                <div class="col-md-2">
+
+                    <% if(movie.poster_path){ %>
+                        <img src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/<%=movie.poster_path%>"
+                            class="img-thumbnail" alt="">
+                        <%}else {%>
+                            <img src="https://drscdn.500px.org/photo/41999700/q%3D80_m%3D1500_of%3D1/v2?sig=236aa55a1f9285f829aeae854b46b723cec830b1b18864d3d24c9ee7ee3cfda2"
+                                class="img-thumbnail alt="">
+                            <%}%>
+                                <p class=" card-title"><strong>
+                                <a href="/movies/<%=movie.id%>" class="text-decoration-none">
+                                    <%=movie.original_title%>
+                                </a>
+                            </strong></p>
+                            <p class="text-muted">
+                                Rating: <%=movie.vote_average%>
+                            </p>
+                </div>
+                <%}%>
+        </div>
+        <%}else{%>
+            <div class="row">
+                <div class="col-6 offset-3">
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">
+                            Khong co ket qua
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            <%}%>

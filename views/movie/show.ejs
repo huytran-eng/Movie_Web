@@ -1,0 +1,64 @@
+<% layout('layout/boilerplate')%>
+    <div class="card">
+        <div class="row">
+            <div class="col-sm-3">
+                <% if(movie.poster_path){ %>
+                    <img src="https://image.tmdb.org/t/p/w500/<%=movie.poster_path%>" class="card-img" alt="">
+                    <%}else {%>
+                        <img src="https://drscdn.500px.org/photo/41999700/q%3D80_m%3D1500_of%3D1/v2?sig=236aa55a1f9285f829aeae854b46b723cec830b1b18864d3d24c9ee7ee3cfda2"
+                            class="d-block w-100" alt="">
+                        <%}%>
+                            <%if(currentUser){%>
+                                <div class="card-body">
+                                    <form class="d-inline" action="/movies/<%=movie.id%>/watched" method="POST">
+                                        <button class="btn btn-info">Danh dau la da xem</button>
+                                    </form>
+                                    <form class="d-inline" action="/movies/<%=movie.id%>/favorite" method="POST">
+                                        <button class="btn btn-info">Them vao yeu thich</button>
+                                    </form>
+                                </div>
+                                <%}%>
+            </div>
+            <div class="col-sm-9">
+                <h5>
+                    <%=movie.original_title%>
+                </h5>
+
+                <p class="card-text">
+                    <strong> Tong quan: </strong>
+                    <%=movie.overview%>
+                </p>
+            </div>
+        </div>
+    </div>
+    <% if(currentUser){%>
+        <h2>Danh gia</h2>
+        <form action="/movies/<%=movie.id%>/comments" method="POST">
+            <div>
+                <textarea class="form-control" name="comments" id="body" cols="30" rows="2"></textarea>
+                <button class="btn btn-info">xac nhan</button>
+            </div>
+
+        </form>
+        <%}else {%>
+            <a class="card-link btn btn-link" href="/login">Đăng nhập để đánh giá</a>
+            <%}%>
+                <%if(results){ for (let result of results) {%>
+                    <div class="card">
+                        <div class="mb-3 card-body">
+                            <a href="/user/<%=result.user_id%>" class="link-primary"><strong>
+                                    <%=result.username%>
+                                </strong></a>
+                            <h5></h5>
+                            <h5>
+                                <%=result.text%>
+                                    <%if( currentUser && currentUser.user_id==result.user_id ){%>
+                                        <form action="/movies/<%=movie.id%>/<%=result.comment_id%>?_method=DELETE"
+                                            method="POST">
+                                            <button class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                        <%}%>
+                            </h5>
+                        </div>
+                    </div>
+                    <%}}%>

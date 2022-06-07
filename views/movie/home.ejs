@@ -1,0 +1,25 @@
+<% layout('layout/boilerplate')%>
+
+
+    <div class="row">
+        <% for (let movie of movies){%>
+
+            <div class="col-md-2">
+
+                <img class="img-thumbnail"
+                    src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/<%=movie['poster_path']%>" alt="Image"
+                    class="img-fluid">
+
+                <p class="card-title"><strong>
+                        <a href="/movies/<%=movie.id%>" class="text-decoration-none">
+                            <%=movie.original_title%>
+                        </a>
+                    </strong></p>
+                <p class="text-muted">
+                    Rating: <%=movie.vote_average%>
+                </p>
+            </div>
+
+
+            <%}%>
+    </div>

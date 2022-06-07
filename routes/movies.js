@@ -1,0 +1,17 @@
+const express = require('express')
+const router = express.Router({ mergeParams: true })
+const axios = require('axios')
+const con = require('../mysql_con')
+const movies = require('../functions/movies')
+const { isLoggedIn } = require('../middleware')
+const catchAsync = require('../error_handling/catchAsync')
+
+router.get('/', catchAsync(movies.home))
+router.get('/find', catchAsync(movies.find))
+router.get('/:id', catchAsync(movies.findOne))
+router.post('/:id/watched', isLoggedIn, movies.watched)
+router.post('/:id/favorite', isLoggedIn, movies.favorite)
+router.post('/:id/deletefav', isLoggedIn, movies.deleteFav)
+router.post('/:id/comments', isLoggedIn, movies.comment)
+router.delete('/:id/:cId', isLoggedIn, movies.delComment)
+module.exports = router
