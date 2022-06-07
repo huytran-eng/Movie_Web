@@ -10,7 +10,6 @@ const userRoute = require('./routes/users')
 const flash = require('connect-flash')
 const ExpressError = require('./error_handling/expressErrors')
 require('dotenv').config()
-
 const sessionConfig = {
     secret: process.env.SECRET,
     resave: false,

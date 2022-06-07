@@ -11,6 +11,7 @@ module.exports.userInfo = async (req, res) => {
 
     const thongtin = await con.promise().query('SELECT u.user_id,u.username,um.status,um.movie_id FROM users u LEFT JOIN user_and_movies um ON u.user_id=um.user_id WHERE u.user_id=?',
         [user_id])
+    console.log(thongtin)
     if (thongtin[0].length == 0) {
         req.flash('error', "khong tim thay nguoi dung")
         res.redirect('/movies')
@@ -21,11 +22,13 @@ module.exports.userInfo = async (req, res) => {
         const fav = []
         const watched = []
         for (l of thongtin[0]) {
-            const url = `https://api.themoviedb.org/3/movie/${l.movie_id}?api_key=${process.env.API_KEY}`;
-            const response = await axios.get(url)
-            const movie = response.data
-            if (l.status == 'watched') watched.push(movie);
-            else if (l.status == 'favorite') fav.push(movie);
+            if (l.movie_id) {
+                const url = `https://api.themoviedb.org/3/movie/${l.movie_id}?api_key=${process.env.API_KEY}`;
+                const response = await axios.get(url)
+                const movie = response.data
+                if (l.status == 'watched') watched.push(movie);
+                else if (l.status == 'favorite') fav.push(movie);
+            }
         }
         res.render('user/user', { fav, watched, username, user_id })
     }
