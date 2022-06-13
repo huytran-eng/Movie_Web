@@ -8,9 +8,9 @@ const { isLoggedIn } = require('../middleware')
 
 router.get('/user/:id', catchAsync(user.userInfo))
 router.get('/register', user.renderRegister)
-router.post('/register', user.register)
+router.post('/register', catchAsync(user.register2))
 router.get('/login', user.renderLogin)
-router.post('/login', user.login)
+router.post('/login', catchAsync(user.login))
 router.get('/logout', (req, res) => {
     req.session.destroy()
     res.redirect('/movies')
