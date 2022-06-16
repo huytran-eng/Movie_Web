@@ -16,21 +16,19 @@ module.exports.userInfo = async (req, res) => {
         res.redirect('/movies')
         return
     }
-    else {
-        const username = thongtin[0][0].username
-        const fav = []
-        const watched = []
-        for (l of thongtin[0]) {
-            if (l.movie_id) {
-                const url = `https://api.themoviedb.org/3/movie/${l.movie_id}?api_key=${process.env.API_KEY}`;
-                const response = await axios.get(url)
-                const movie = response.data
-                if (l.status == 'watched') watched.push(movie);
-                else if (l.status == 'favorite') fav.push(movie);
-            }
+    const username = thongtin[0][0].username
+    const fav = []
+    const watched = []
+    for (l of thongtin[0]) {
+        if (l.movie_id) {
+            const url = `https://api.themoviedb.org/3/movie/${l.movie_id}?api_key=${process.env.API_KEY}`;
+            const response = await axios.get(url)
+            const movie = response.data
+            if (l.status == 'watched') watched.push(movie);
+            else if (l.status == 'favorite') fav.push(movie);
         }
-        res.render('user/user', { fav, watched, username, user_id })
     }
+    res.render('user/user', { fav, watched, username, user_id })
 }
 
 module.exports.renderRegister = (req, res) => {
@@ -76,10 +74,6 @@ module.exports.login = async (req, res) => {
     }
     const validPass = await bcrypt.compare(password, thongtin[0][0].password)
     if (validPass) {
-        var temp = {}
-        // temp.user_id = thongtin[0][0].user_id
-        // temp.email = thongtin[0][0].email;
-        // temp.username = thongtin[0][0].username;
         req.session.user = thongtin[0][0]
         console.log(req.session.user)
         req.flash('success', "dang nhap thanh cong")
