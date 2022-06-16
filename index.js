@@ -9,7 +9,7 @@ const movieRoute = require('./routes/movies')
 const userRoute = require('./routes/users')
 const flash = require('connect-flash')
 const ExpressError = require('./error_handling/expressErrors')
-require('dotenv').config()
+const dotenv = require('dotenv').config()
 const sessionConfig = {
     secret: process.env.SECRET,
     resave: false,
@@ -18,7 +18,9 @@ const sessionConfig = {
         httpOnly: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
-    }
+    },
+    resave: true,
+    saveUninitialized: true
 }
 app.use(session(sessionConfig))
 app.use(flash())

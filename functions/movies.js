@@ -23,44 +23,33 @@ module.exports.findOne = async (req, res) => {
     const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.API_KEY}`;
     const response = await axios.get(url)
     const movie = response.data
-    const query = 'SELECT c.text,u.username,c.user_id,c.comment_id FROM comments c JOIN users u ON u.user_id = c.user_id WHERE c.movie_id = ? '
-    con.query(query, [id],
-        (error, results, fields) => {
-            res.render('movie/show', { movie, results })
-        });
+    const query = 'SELECT c.text,u.username,c.user_id FROM comments c JOIN users u ON u.user_id = c.user_id WHERE c.movie_id = ? '
+    const [results] = await con.promise().query(query, [id])
+    res.render('movie/show', { movie, results })
 }
 
-module.exports.watched = (req, res) => {
+module.exports.watched = async (req, res) => {
     const user_id = req.session.user.user_id
     const movie_id = req.params.id
-    con.query('SELECT * FROM user_and_movies WHERE user_id= ? AND movie_id = ? ', [user_id, movie_id],
-        (error, results, fields) => {
-            if (error) throw (error)
-            if (results && results.length && results[0].status == 'favorite') {
-                req.flash('error', 'Phim nam trong muc yeu thich')
-                res.redirect(`/movies/${movie_id}`)
-            }
-            else {
-                con.query('INSERT INTO user_and_movies(user_id,movie_id,status) VALUES("' + user_id + '", "' + movie_id + '", "watched")',
-                    (error, results, fields) => {
-                        req.flash('success', 'Them vao da xem')
-                        res.redirect(`/movies/${movie_id}`)
-                    }
-                )
-            }
-        }
-    )
+    const [results] = await con.promise().query('SELECT * FROM user_and_movies WHERE user_id= ? AND movie_id = ? ', [user_id, movie_id])
+    if (results[0].status == 'favorite' || results[0].status == 'watched') {
+        req.flash('error', 'Khong the them')
+        res.redirect(`/movies/${movie_id}`)
+    }
+    else {
+        await con.promise().query('INSERT INTO user_and_movies(user_id,movie_id,status) VALUES("' + user_id + '", "' + movie_id + '", "watched")')
+        req.flash('success', 'Them vao da xem')
+        res.redirect(`/movies/${movie_id}`)
+    }
 }
-module.exports.favorite = (req, res) => {
+module.exports.favorite = async (req, res) => {
     const user_id = req.session.user.user_id
     const movie_id = req.params.id
-    con.query('INSERT INTO user_and_movies(user_id,movie_id,status) VALUES("' + user_id + '", "' + movie_id + '", "favorite")  ON DUPLICATE KEY UPDATE status="favorite"',
-        (error, results, fields) => {
-            req.flash('success', 'Them vao yeu thich')
-            res.redirect(`/movies/${movie_id}`)
-        }
-    )
+    await con.promise().query('INSERT INTO user_and_movies(user_id,movie_id,status) VALUES("' + user_id + '", "' + movie_id + '", "favorite")  ON DUPLICATE KEY UPDATE status="favorite"')
+    req.flash('success', 'Them vao yeu thich')
+    res.redirect(`/movies/${movie_id}`)
 }
+
 module.exports.deleteFav = (req, res) => {
     const user_id = req.session.user.user_id
     const movie_id = req.params.id
