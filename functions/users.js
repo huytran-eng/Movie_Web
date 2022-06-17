@@ -10,9 +10,7 @@ module.exports.userInfo = async (req, res) => {
     const user_id = req.params.id;
     const [result] = await con.promise().query('SELECT u.user_id,u.username,um.status,um.movie_id FROM users u LEFT JOIN user_and_movies um ON u.user_id=um.user_id WHERE u.user_id=?',
         [user_id])
-    console.log(result)
-    const isEmpty = Object.keys(result[0]).length === 0;
-    if (isEmpty) {
+    if (result.length === 0) {
         req.flash('error', "khong tim thay nguoi dung")
         res.redirect('/movies')
         return
@@ -45,8 +43,7 @@ module.exports.register = async (req, res) => {
         return;
     }
     const [result] = await con.promise().query('SELECT * FROM users WHERE email = ? OR username = ? ', [email, username])
-    const isEmpty = Object.keys(result[0]).length === 0;
-    if (!isEmpty) {
+    if (result.length > 0) {
         req.flash('error', "email hoac ten dang nhap da ton tai")
         res.redirect('/register');
         return
@@ -69,9 +66,8 @@ module.exports.login = async (req, res) => {
         return;
     }
     const [result] = await con.promise().query('SELECT * FROM users WHERE email = ?', [email])
-    console.log(result[0])
     const isEmpty = Object.keys(result[0]).length === 0;
-    if (isEmpty) {
+    if (result.length === 0) {
         req.flash("error", "sai tai khoan hoac mat khau")
         res.redirect("/login")
         return
